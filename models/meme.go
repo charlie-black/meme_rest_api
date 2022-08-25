@@ -1,21 +1,28 @@
 package models
 
-type Meme struct{
-
+type Meme struct {
+	ID      int    `json:"id"`
+	Creator string `json:"creator"`
+	Url     string `json:"url"`
 }
 
-type DeleteMeme struct{
-
+type DeleteMeme struct {
+	ID int `db:"id"`
 }
 
-type CreateMeme struct{
-
+type CreateMeme struct {
+	Creator string `json:"creator"`
+	Url     string `json:"url"`
 }
 
-type GetMemeByID struct{
-
+type GetMemeByID struct {
+	ID      int    `db:"id"`
+	Creator string `json:"creator"`
+	Url     string `json:"url"`
 }
 
-type UpdateMeme struct{
-
+type UpdateMeme struct {
+	ID      int    `db:"id"`
+	Creator string `json:"creator"`
+	Url     string `json:"url"`
 }

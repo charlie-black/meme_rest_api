@@ -11,13 +11,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-
-func main(){
+func main() {
 
 	//connect to the database
-	db, err := sqlx.Connect("postgres", "user=piccasso dbname=notebook sslmode=disable")
+	db, err := sqlx.Connect("postgres", "user=piccasso dbname=memeDB sslmode=disable")
 
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
 	}
 	println("Connected to Database", db)
@@ -25,9 +24,8 @@ func main(){
 	app := iris.New()
 	app.Use(iris.Compression)
 
-	memecontrollers.InitializeEndpoints(app,db)
+	memecontrollers.InitializeEndpoints(app, db)
 
 	app.Listen(":3500")
-
 
 }
