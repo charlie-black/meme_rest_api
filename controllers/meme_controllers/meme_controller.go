@@ -28,4 +28,31 @@ func InitializeEndpoints(app *iris.Application, db *sqlx.DB){
 		}
 		ctx.JSON(memes)
 	} )
+
+	// create meme
+
+	app.Post("/create_memes", func(ctx iris.Context){
+		var user_params models.CreateMeme
+		err := ctx.ReadJSON(&user_params)
+
+		if err != nil{
+			ctx.StatusCode(iris.StatusBadRequest)
+			ctx.JSON(iris.Map{"error": err.Error()})
+			return
+		}
+		_, err = db.NamedExec(`INSERT INTO notes (creator, url)
+        VALUES (:creator, :url)`, user_params)
+
+		if err != nil {
+			ctx.StatusCode(iris.StatusBadRequest)
+			ctx.JSON(iris.Map{"error": err.Error()})
+			return
+
+		}
+
+		ctx.JSON(iris.Map{"message": "Meme Added Successfully"})
+
+	
+		
+	})
 }
