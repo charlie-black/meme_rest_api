@@ -26,3 +26,18 @@ type UpdateMeme struct {
 	Creator string `json:"creator"`
 	Url     string `json:"url"`
 }
+
+type UserClaims struct {
+
+Username string  `json:"user_name"`
+}
+
+type LoginParams struct{
+	Email string `json:"email"`
+	Password string `json:"password"`
+}
+
+type SignUpParams struct{
+	Email string `json:"email"`
+	Password string `json:"password"`
+}

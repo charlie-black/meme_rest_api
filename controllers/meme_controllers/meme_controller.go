@@ -1,10 +1,13 @@
 package memecontrollers
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"meme/models"
 
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/context"
 
 	_ "log"
 
@@ -12,11 +15,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func InitializeEndpoints(app *iris.Application, db *sqlx.DB) {
+func InitializeEndpoints(app *iris.Application, db *sqlx.DB, verifyMiddleWare context.Handler) {
 
 	//get all memes
 
-	app.Get("/memes", func(ctx iris.Context) {
+	app.Get("/memes", verifyMiddleWare, func(ctx iris.Context) {
 		memes := []models.Meme{}
 		err := db.Select(&memes, "SELECT * FROM funny_memes")
 
@@ -29,7 +32,7 @@ func InitializeEndpoints(app *iris.Application, db *sqlx.DB) {
 
 	// create meme
 
-	app.Post("/create_memes", func(ctx iris.Context) {
+	app.Post("/create_memes", verifyMiddleWare, func(ctx iris.Context) {
 		var user_params models.CreateMeme
 		err := ctx.ReadJSON(&user_params)
 
@@ -53,7 +56,7 @@ func InitializeEndpoints(app *iris.Application, db *sqlx.DB) {
 	})
 
 	//delete a meme
-	app.Delete("/delete_meme", func(ctx iris.Context) {
+	app.Delete("/delete_meme", verifyMiddleWare, func(ctx iris.Context) {
 		var user_params models.DeleteMeme
 		err := ctx.ReadJSON(&user_params)
 		var count int
@@ -87,7 +90,7 @@ func InitializeEndpoints(app *iris.Application, db *sqlx.DB) {
 
 	//update a meme
 
-	app.Post("/update_meme", func(ctx iris.Context) {
+	app.Post("/update_meme", verifyMiddleWare, func(ctx iris.Context) {
 		var user_params models.UpdateMeme
 		err := ctx.ReadJSON(&user_params)
 		var count int
@@ -120,7 +123,7 @@ func InitializeEndpoints(app *iris.Application, db *sqlx.DB) {
 
 	})
 
-	app.Get("/single_meme", func(ctx iris.Context) {
+	app.Get("/single_meme", verifyMiddleWare, func(ctx iris.Context) {
 		var user_params models.GetMemeByID
 		memes := []models.GetMemeByID{}
 		err := db.Select(&memes, "SELECT id FROM funny_memes WHERE id=$1", user_params.ID)
@@ -132,4 +135,11 @@ func InitializeEndpoints(app *iris.Application, db *sqlx.DB) {
 		ctx.JSON(memes)
 
 	})
+}
+
+func HashPassword(password string) string{
+	h := sha1.New()
+	h.Write([]byte(password))
+	sha1_hash := hex.EncodeToString(h.Sum(nil))
+	return sha1_hash
 }
